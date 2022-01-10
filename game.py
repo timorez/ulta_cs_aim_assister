@@ -44,7 +44,7 @@ class Game():
         pygame.draw.circle(self.screen, self.color_ball, (self.coord_x, self.coord_y),
                            self.radius_ball, self.width_ball)
 
-
+    # в разработке
     def update2(self, radius_ball2):
         self.hsv = self.color_ball.hsva
         self.radius_ball2 = radius_ball2
