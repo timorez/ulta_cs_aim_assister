@@ -1,19 +1,33 @@
 import pygame
-import math
 import random
-
+import math
 
 pygame.init()
 size = width, height = 1024, 768
 screen = pygame.display.set_mode(size)
-pygame.display.set_caption('ultra_cs_aim_assister')
-running = True
-
+pygame.display.set_caption('ultra cs aim assister')
 sprite = pygame.sprite.Sprite()
 all_sprites = pygame.sprite.Group()
 
-clock = pygame.time.Clock()
-FPS = 120
+default_color_ball = pygame.color.Color('white')
+default_radius_ball = 35
+default_width_ball = 1
+default_fulness_ball = 0
+default_col_vo = 4
+default_color_screen = pygame.color.Color('black')
+color_screen = default_color_screen
+
+color_ball = default_color_ball
+radius_ball = default_radius_ball
+width_ball = default_width_ball
+fulness_ball = default_fulness_ball
+
+click = 0
+start_timer = None
+rectangle_menu = pygame.Rect(width - width / 5, height - height / 10,
+                             width / 5, height / 10)
+v = 1
+time = 0
 
 zapusk = None
 pygame.draw.circle(screen, 'white', (width / 2, height / 2), height / 10, 1)
@@ -22,9 +36,26 @@ f = pygame.font.Font(None, 40)
 text = f.render(text, True, 'white')
 pos = text.get_rect(center=(width / 2, height / 2))
 screen.blit(text, pos)
+col_vo = default_col_vo
+
+horizontal_borders = pygame.sprite.Group()
+vertical_borders = pygame.sprite.Group()
+
+begin = 1
+to_menu = 0
+to_settings = 0
+to_records = 0
+to_intro = 0
+to_gameplay = 0
+to_results = 0
+clicked = 0
+end_click = 0
+
+running = True
+clock = pygame.time.Clock()
+FPS = 120
 
 
-# menu ot timoshi
 class Menu:
     def __init__(self, width, height):
         self.width = width
@@ -35,7 +66,6 @@ class Menu:
         self.cell_size = 150
         self.text_x = 200
         self.text_y = 150
-        print(self.board)
 
     def set_view(self, left, top, cell_size):
         self.left = left
@@ -43,7 +73,7 @@ class Menu:
         self.cell_size = cell_size
 
     def render(self, screen):
-        texts = ['start', 'settings', 'records', 'exit']
+        texts = ['play', 'settings', 'records', 'exit']
         text_x = self.text_x
         text_y = self.text_y
         cur_left = self.left
@@ -61,19 +91,86 @@ class Menu:
             text_y += 150
 
     def click(self, mouse_pos):
+        ret = 0
         if 200 <= mouse_pos[0] <= 350:
             if 100 < mouse_pos[1] < 250:
-                pass
+                ret = 1
             elif 250 < mouse_pos[1] < 400:
-                pass
+                ret = 2
             elif 400 < mouse_pos[1] < 550:
-                pass
+                ret = 3
             elif 550 < mouse_pos[1] < 700:
-                return 0
+                ret = 4
+        return ret
+
+
+class Game:
+    def __init__(self, color_ball, radius_ball, width_ball, fulness_ball, width, height, screen):
+        self.color_ball = color_ball
+        self.radius_ball = radius_ball
+        self.width_ball = width_ball
+        self.fulness_ball = fulness_ball
+        self.width = width
+        self.height = height
+        self.coord_x = width / 2
+        self.coord_y = height / 2
+        self.width_right = self.width - self.radius_ball
+        self.width_left = self.radius_ball
+        self.height_top = self.radius_ball
+        self.height_bottom = self.height - self.radius_ball
+        self.screen = screen
+
+    def render(self):
+        if self.fulness_ball == 0:
+            pygame.draw.circle(self.screen, self.color_ball, (self.width / 2, self.height / 2),
+                               self.radius_ball, self.width_ball)
+        elif self.fulness_ball == 1:
+            self.width_ball = 0
+            pygame.draw.circle(self.screen, self.color_ball, (self.width / 2, self.height / 2),
+                               self.radius_ball, self.width_ball)
+
+    def update(self):
+        self.coord_x = random.randint(self.width_left, self.width_right)
+        self.coord_y = random.randrange(self.height_top, self.height_bottom)
+        pygame.draw.circle(self.screen, self.color_ball, (self.coord_x, self.coord_y),
+                           self.radius_ball, self.width_ball)
+
+    # в разработке
+    def update2(self, radius_ball2):
+        self.hsv = self.color_ball.hsva
+        self.radius_ball2 = radius_ball2
+        if self.radius_ball <= self.radius_ball2 * 1.2:
+            self.screen.fill('black')
+            self.radius_ball += 1
+            self.color_ball.hsva = (self.hsv[0], self.hsv[1], self.hsv[2] - 9, self.hsv[3])
+            pygame.draw.circle(self.screen, self.color_ball, (self.coord_x, self.coord_y),
+                               self.radius_ball, self.width_ball)
+        else:
+            self.radius_ball = self.radius_ball / 1.2
+            self.color_ball.hsva = (self.hsv[0], self.hsv[1], 100, self.hsv[3])
+            self.screen.fill('black')
+
+    def return_pos(self):
+        return self.coord_x, self.coord_y
+
+    def end(self, time, rectangle):
+        self.time = str(round(time, 3))
+        self.f = pygame.font.Font(None, 50)
+        self.text = 'Time - ' + self.time + ' sec'
+        self.text = self.f.render(self.text, True, 'Green')
+        self.pos = self.text.get_rect(center=(width / 2, height / 2))
+        screen.blit(self.text, self.pos)
+        self.f = pygame.font.Font(None, 25)
+        self.text = 'Back to menu'
+        self.text = self.f.render(self.text, True, 'Green')
+        self.rectangle = rectangle
+        self.pos = self.text.get_rect(center=(self.width - self.width / 10, self.height - self.height / 20))
+        pygame.draw.rect(self.screen, 'green', self.rectangle, 1)
+        screen.blit(self.text, self.pos)
 
 
 class Ball(pygame.sprite.Sprite):
-    def __init__(self, radius, x, y , colvo_stolknoveniy):
+    def __init__(self, radius, x, y, colvo_stolknoveniy):
         super().__init__(all_sprites)
         self.radius = radius
         self.image = pygame.Surface((2 * radius, 2 * radius),
@@ -101,11 +198,6 @@ class Ball(pygame.sprite.Sprite):
             self.kill()
 
 
-
-horizontal_borders = pygame.sprite.Group()
-vertical_borders = pygame.sprite.Group()
-
-
 class Border(pygame.sprite.Sprite):
     def __init__(self, x1, y1, x2, y2):
         super().__init__(all_sprites)
@@ -119,35 +211,92 @@ class Border(pygame.sprite.Sprite):
             self.rect = pygame.Rect(x1, y1, x2 - x1, 1)
 
 
+menu = Menu(1, 4)
+game = Game(color_ball, radius_ball, width_ball, fulness_ball, width, height, screen)
 Border(5, 5, width - 5, 5)
 Border(5, height - 5, width - 5, height - 5)
 Border(5, 5, 5, height - 5)
 Border(width - 5, 5, width - 5, height - 5)
 for i in range(20):
     Ball(20, width / 2, height / 2, 0)
-menu = Menu(1, 4)
 
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            x_coord = pygame.mouse.get_pos()[0]
-            y_coord = pygame.mouse.get_pos()[1]
-            sqx = (x_coord - (width / 2)) ** 2
-            sqy = (y_coord - (height / 2)) ** 2
-            if math.sqrt(sqx + sqy) < height / 10:
-                zapusk = 1
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if menu.click(pygame.mouse.get_pos()) == 0:
+if __name__ == '__main__':
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
                 running = False
-
-    if zapusk == 1:
-        screen.fill('black')
-        all_sprites.draw(screen)
-        horizontal_borders.draw(screen)
-        vertical_borders.draw(screen)
-        all_sprites.update()
-        menu.render(screen)
-    pygame.display.flip()
-    clock.tick(FPS)
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                x_coord = pygame.mouse.get_pos()[0]
+                y_coord = pygame.mouse.get_pos()[1]
+                if (pygame.mouse.get_pos()[0] - game.coord_x) ** 2 + (
+                        pygame.mouse.get_pos()[1] - game.coord_y) ** 2 < default_radius_ball ** 2:
+                    clicked = 1
+                if width - width / 5 <= x_coord <= (width - width / 5) + (width / 5)\
+                        and height - height / 10 <= y_coord <= (height - height / 10) + (height / 10)  and col_vo == 0:
+                    end_click = 1
+                sqx = (x_coord - (width / 2)) ** 2
+                sqy = (y_coord - (height / 2)) ** 2
+                if math.sqrt(sqx + sqy) < height / 10 and begin == 1:
+                    begin = 0
+                    to_intro = 1
+                    to_menu = 1
+                if to_menu == 1:
+                    if menu.click([x_coord, y_coord]) == 1:
+                        to_gameplay = 1
+                        to_menu = 0
+                        to_intro = 0
+                    elif menu.click([x_coord, y_coord]) == 2:
+                        to_menu = 0
+                        to_settings = 1
+                        to_intro = 0
+                    elif menu.click([x_coord, y_coord]) == 3:
+                        to_menu = 0
+                        to_records = 1
+                        to_intro = 0
+                    elif menu.click([x_coord, y_coord]) == 4:
+                        running = False
+                        break
+        screen.fill((0, 0, 0))
+        if begin == 1:
+            pygame.draw.circle(screen, 'white', (width / 2, height / 2), height / 10, 1)
+            text = 'Start'
+            f = pygame.font.Font(None, 40)
+            text = f.render(text, True, 'white')
+            pos = text.get_rect(center=(width / 2, height / 2))
+            screen.blit(text, pos)
+        if to_intro == 1:
+            all_sprites.draw(screen)
+            horizontal_borders.draw(screen)
+            vertical_borders.draw(screen)
+            all_sprites.update()
+        if to_menu == 1:
+            menu.render(screen)
+        if to_gameplay == 1:
+            time += v / 60
+            if clicked == 1:
+                col_vo -= 1
+                clicked = 0
+                game.update()
+            else:
+                pygame.draw.circle(game.screen, game.color_ball, (game.coord_x, game.coord_y),
+                                   game.radius_ball, game.width_ball)
+            if col_vo == 0:
+                game.end(time, rectangle_menu)
+                to_gameplay = 0
+                to_results = 1
+        if to_results == 1:
+            game.end(time, rectangle_menu)
+            if end_click == 1:
+                begin = 0
+                to_menu = 1
+                to_settings = 0
+                to_records = 0
+                to_intro = 0
+                to_gameplay = 0
+                to_results = 0
+                clicked = 0
+                end_click = 0
+                col_vo = default_col_vo
+                time = 0
+        pygame.display.flip()
+        clock.tick(FPS)
