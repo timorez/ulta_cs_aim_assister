@@ -236,7 +236,7 @@ if __name__ == '__main__':
                         pygame.mouse.get_pos()[1] - game.coord_y) ** 2 < default_radius_ball ** 2:
                     clicked = 1
                 if width - width / 5 <= x_coord <= (width - width / 5) + (width / 5)\
-                        and height - height / 10 <= y_coord <= (height - height / 10) + (height / 10)  and col_vo == 0:
+                        and height - height / 10 <= y_coord <= (height - height / 10) + (height / 10) and col_vo == 0:
                     end_click = 1
                 sqx = (x_coord - (width / 2)) ** 2
                 sqy = (y_coord - (height / 2)) ** 2
@@ -292,11 +292,16 @@ if __name__ == '__main__':
             game.end(time, rectangle_menu)
             if end_click == 1:
                 prev_rec = list(cur.execute("""SELECT * FROM records"""))
-                if prev_rec[0][1] < time / default_col_vo:
-                    cur.execute("""UPDATE records
-                                   SET (time, targets_per_second) = (?, ?)""",
-                                (round(time, 3), round(time / default_col_vo, 3)))
-                    con.commit()
+                print(prev_rec)
+                for rec in prev_rec:
+                    if rec[1] < time / default_col_vo:
+                        cur.execute("""UPDATE records
+                                       SET (time, targets_per_second) = (?, ?)
+                                       WHERE id = ?""",
+                                    (round(time, 3), round(time / default_col_vo, 3), rec[2]))
+                        print(rec[2])
+                        con.commit()
+                        break
                 begin = 0
                 to_menu = 1
                 to_settings = 0
