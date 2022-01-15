@@ -1,7 +1,11 @@
 import pygame
 import random
 import math
+import sqlite3
 
+
+con = sqlite3.connect('records.sqlite')
+cur = con.cursor()
 pygame.init()
 size = width, height = 1024, 768
 screen = pygame.display.set_mode(size)
@@ -287,6 +291,12 @@ if __name__ == '__main__':
         if to_results == 1:
             game.end(time, rectangle_menu)
             if end_click == 1:
+                prev_rec = list(cur.execute("""SELECT * FROM records"""))
+                if prev_rec[0][1] < time / default_col_vo:
+                    cur.execute("""UPDATE records
+                                   SET (time, targets_per_second) = (?, ?)""",
+                                (round(time, 3), round(time / default_col_vo, 3)))
+                    con.commit()
                 begin = 0
                 to_menu = 1
                 to_settings = 0
