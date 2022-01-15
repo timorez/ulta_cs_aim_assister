@@ -292,14 +292,12 @@ if __name__ == '__main__':
             game.end(time, rectangle_menu)
             if end_click == 1:
                 prev_rec = list(cur.execute("""SELECT * FROM records"""))
-                print(prev_rec)
                 for rec in prev_rec:
                     if rec[1] < time / default_col_vo:
                         cur.execute("""UPDATE records
                                        SET (time, targets_per_second) = (?, ?)
                                        WHERE id = ?""",
                                     (round(time, 3), round(time / default_col_vo, 3), rec[2]))
-                        print(rec[2])
                         con.commit()
                         break
                 begin = 0
