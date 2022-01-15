@@ -139,21 +139,6 @@ class Game:
         pygame.draw.circle(self.screen, self.color_ball, (self.coord_x, self.coord_y),
                            self.radius_ball, self.width_ball)
 
-    # в разработке
-    def update2(self, radius_ball2):
-        self.hsv = self.color_ball.hsva
-        self.radius_ball2 = radius_ball2
-        if self.radius_ball <= self.radius_ball2 * 1.2:
-            self.screen.fill('black')
-            self.radius_ball += 1
-            self.color_ball.hsva = (self.hsv[0], self.hsv[1], self.hsv[2] - 9, self.hsv[3])
-            pygame.draw.circle(self.screen, self.color_ball, (self.coord_x, self.coord_y),
-                               self.radius_ball, self.width_ball)
-        else:
-            self.radius_ball = self.radius_ball / 1.2
-            self.color_ball.hsva = (self.hsv[0], self.hsv[1], 100, self.hsv[3])
-            self.screen.fill('black')
-
     def return_pos(self):
         return self.coord_x, self.coord_y
 
