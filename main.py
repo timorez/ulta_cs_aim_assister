@@ -200,6 +200,38 @@ class Border(pygame.sprite.Sprite):
             self.rect = pygame.Rect(x1, y1, x2 - x1, 1)
 
 
+class Records:
+    def __init__(self):
+        self.y = 100
+
+    def render(self, screen):
+        data = list(cur.execute("""SELECT * FROM records"""))
+        f = pygame.font.Font(None, 40)
+        title_text = f.render('Records', True, 'white')
+        tps_text = f.render('targets per second', True, 'white')
+        time_text = f.render('time', True, 'white')
+        button_text = f.render('go to menu', True, 'white')
+        screen.blit(title_text, (450, 20))
+        screen.blit(time_text, (400, 50))
+        screen.blit(tps_text, (500, 50))
+        times = []
+        tpss = []
+        for _ in data:
+            time = f.render(str(_[0]), True, 'white')
+            tps = f.render(str(_[1]), True, 'white')
+            times.append(time)
+            tpss.append(tps)
+        screen.blit(times[0], (400, self.y))
+        screen.blit(tpss[0], (550, self.y))
+        screen.blit(times[1], (400, self.y + 50))
+        screen.blit(tpss[1], (550, self.y + 50))
+        screen.blit(times[2], (400, self.y + 100))
+        screen.blit(tpss[2], (550, self.y + 100))
+        screen.blit(button_text, (800, 700))
+        pygame.draw.rect(screen, 'white', (800, 690, 150, 50), 1)
+
+
+records = Records()
 menu = Menu(1, 4)
 game = Game(color_ball, radius_ball, width_ball, fulness_ball, width, height, screen)
 Border(5, 5, width - 5, 5)
@@ -217,14 +249,14 @@ if __name__ == '__main__':
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 x_coord = pygame.mouse.get_pos()[0]
                 y_coord = pygame.mouse.get_pos()[1]
-                if (pygame.mouse.get_pos()[0] - game.coord_x) ** 2 + (
-                        pygame.mouse.get_pos()[1] - game.coord_y) ** 2 < default_radius_ball ** 2:
+                sqx = (x_coord - (width / 2)) ** 2
+                sqy = (y_coord - (height / 2)) ** 2
+                if (x_coord - game.coord_x) ** 2 + (
+                        y_coord - game.coord_y) ** 2 < default_radius_ball ** 2:
                     clicked = 1
                 if width - width / 5 <= x_coord <= (width - width / 5) + (width / 5)\
                         and height - height / 10 <= y_coord <= (height - height / 10) + (height / 10) and col_vo == 0:
                     end_click = 1
-                sqx = (x_coord - (width / 2)) ** 2
-                sqy = (y_coord - (height / 2)) ** 2
                 if math.sqrt(sqx + sqy) < height / 10 and begin == 1:
                     begin = 0
                     to_intro = 1
@@ -245,6 +277,10 @@ if __name__ == '__main__':
                     elif menu.click([x_coord, y_coord]) == 4:
                         running = False
                         break
+                if to_records == 1:
+                    if 800 < x_coord < 950 and 690 < y_coord < 740:
+                        to_records = 0
+                        to_menu = 1
         screen.fill((0, 0, 0))
         if begin == 1:
             pygame.draw.circle(screen, 'white', (width / 2, height / 2), height / 10, 1)
@@ -296,5 +332,7 @@ if __name__ == '__main__':
                 end_click = 0
                 col_vo = default_col_vo
                 time = 0
+        if to_records == 1:
+            records.render(screen)
         pygame.display.flip()
         clock.tick(FPS)
