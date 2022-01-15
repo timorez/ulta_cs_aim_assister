@@ -115,7 +115,7 @@ class Settings:
     def warning(self):
         self.text = "Warning! Don't use the same colors!"
         self.t = self.f.render(self.text, True, 'white')
-        self.pos = self.t.get_rect(center=(self.width / 10 + self.width / 16 * 2, self.height / 1.5))
+        self.pos = self.t.get_rect(center=(self.width / 10 + self.width / 14 * 2, self.height / 1.5))
         screen.blit(self.t, self.pos)
 
 
