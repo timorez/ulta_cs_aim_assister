@@ -128,6 +128,17 @@ class Settings:
         else:
             self.fulness_ball = 0
         pygame.draw.circle(screen, self.color, (width / 2 + width / 4, height / 4), self.radius, self.fulness_ball)
+        
+        
+    def authors(self):
+        self.text = ['Authors:', 'https://github.com/timorez', 'github.com/evdakim1234']
+        self.y_text = self.height / 1.2
+        for i in self.text:
+            self.f = pygame.font.Font(None, 30)
+            self.t = self.f.render(i, True, 'green')
+            self.pos = self.t.get_rect(center=(self.width / 5, self.y_text))
+            screen.blit(self.t, self.pos)
+            self.y_text += self.height / 40
 
 
 
@@ -138,6 +149,7 @@ set.radius(radius)
 set.color(color_ball)
 set.color_sc(color_screen)
 set.warning()
+set.authors()
 set.circle(radius, color_ball, fullness_ball)
 running = True
 set.fullness_ball(fullness_ball)
