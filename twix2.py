@@ -1,16 +1,20 @@
 import pygame
 
 
+# создание окна для работы
 pygame.init()
 size = width, height = 1024, 768
 screen = pygame.display.set_mode(size)
 default_color_screen = 'black'
+
+# класс выхода из игры
 class Exit:
     def __init__(self, width, height):
         self.width = width
         self.height = height
 
     def click_exit(self):
+        # функция подтверждения\отмены выхода
         pygame.draw.rect(screen, 'white', (self.width / 2 - self.width / 4, self.height / 2 - self.height / 8,
                          self.width / 2, self.height / 5), 1)
         self.rect_dont_exit = pygame.Rect(self.width / 2 - self.width / 4.5, self.height / 2 - self.height / 24,
@@ -39,6 +43,7 @@ class Exit:
 
 
     def authors(self):
+        # ссылка на авторов в конце
         self.text = ['Authors:', 'https://github.com/timorez', 'https://github.com/evdakim1234']
         self.y_text = self.height / 2 - self.height / 40
         for i in self.text:
@@ -57,6 +62,7 @@ class Exit:
 exit = Exit(width, height)
 exit.click_exit()
 running = True
+# основной игровой цикл
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
