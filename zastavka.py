@@ -2,19 +2,21 @@ import pygame
 import math
 import random
 
-
+# создаем окно для работы
 pygame.init()
 size = width, height = 1000, 500
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption('zastavka')
 running = True
 
+#создаем спрайты
 sprite = pygame.sprite.Sprite()
 all_sprites = pygame.sprite.Group()
 
 clock = pygame.time.Clock()
 FPS = 120
 
+# отрисока начального руга
 zapusk = None
 pygame.draw.circle(screen, 'white', (width / 2, height / 2), height / 10, 1)
 text = 'Start'
@@ -24,6 +26,7 @@ pos = text.get_rect(center=(width / 2, height / 2))
 screen.blit(text, pos)
 
 
+# класс шариков заставки
 class Ball(pygame.sprite.Sprite):
     def __init__(self, radius, x, y , colvo_stolknoveniy):
         super().__init__(all_sprites)
@@ -58,6 +61,7 @@ horizontal_borders = pygame.sprite.Group()
 vertical_borders = pygame.sprite.Group()
 
 
+# класс стенок для взаимодействия с шариками
 class Border(pygame.sprite.Sprite):
     def __init__(self, x1, y1, x2, y2):
         super().__init__(all_sprites)
@@ -71,6 +75,7 @@ class Border(pygame.sprite.Sprite):
             self.rect = pygame.Rect(x1, y1, x2 - x1, 1)
 
 
+# настройки стенок и шариков
 Border(5, 5, width - 5, 5)
 Border(5, height - 5, width - 5, height - 5)
 Border(5, 5, 5, height - 5)
@@ -79,6 +84,7 @@ for i in range(20):
     Ball(20, width / 2, height / 2, 0)
 
 
+# основной игровой цикл
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -90,10 +96,12 @@ while running:
             sqy = (y_coord - (height / 2)) ** 2
             if math.sqrt(sqx + sqy) < height / 10:
                 zapusk = 1
+                # начало заставки
         if event.type == pygame.WINDOWMAXIMIZED:
             size = pygame.display.get_desktop_sizes()
             screen = pygame.display.set_mode(size[0])
     if zapusk == 1:
+        # анимация заставки
         screen.fill('black')
         all_sprites.draw(screen)
         horizontal_borders.draw(screen)
