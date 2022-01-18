@@ -33,6 +33,7 @@ rectangle_menu = pygame.Rect(width - width / 5, height - height / 10,
                              width / 5, height / 10)
 v = 1
 time = 0
+start = pygame.time.get_ticks()
 
 zapusk = None
 pygame.draw.circle(screen, 'white', (width / 2, height / 2), height / 10, 1)
@@ -55,6 +56,7 @@ to_gameplay = 0
 to_results = 0
 clicked = 0
 end_click = 0
+to_exit = 0
 
 running = True
 clock = pygame.time.Clock()
@@ -354,6 +356,64 @@ class Settings:
             self.y_text += self.height / 40
 
 
+class Exit:
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+        self.rect_dont_exit = pygame.Rect(self.width / 2 - self.width / 4.5, self.height / 2 - self.height / 24,
+                                           self.width / 6, self.height / 16)
+        self.rect_exit = pygame.Rect(self.width / 2 + self.width / 18, self.height / 2 - self.height / 24,
+                                     self.width / 6, self.height / 16)
+        print(self.width / 2 - self.width / 4.5, self.height / 2 - self.height / 24,
+                                           self.width / 6, self.height / 16)
+        print(self.width / 2 + self.width / 18, self.height / 2 - self.height / 24,
+                                     self.width / 6, self.height / 16)
+
+    def click_exit(self):
+        # функция подтверждения\отмены выхода
+        pygame.draw.rect(screen, 'white', (self.width / 2 - self.width / 4, self.height / 2 - self.height / 8,
+                         self.width / 2, self.height / 5), 1)
+        self.rect_dont_exit = pygame.Rect(self.width / 2 - self.width / 4.5, self.height / 2 - self.height / 24,
+                                           self.width / 6, self.height / 16)
+        pygame.draw.rect(screen, 'white', (self.rect_dont_exit), 1)
+        self.rect_exit = pygame.Rect(self.width / 2 + self.width / 18, self.height / 2 - self.height / 24,
+                                           self.width / 6, self.height / 16)
+        pygame.draw.rect(screen, 'white', self.rect_exit, 1)
+        self.f = pygame.font.Font(None, 40)
+        self.text = 'Do you want to quit the game?'
+        self.t = self.f.render(self.text, True, 'white')
+        self.pos = self.t.get_rect(center=(self.width / 2, self.height / 2.5))
+        screen.blit(self.t, self.pos)
+        self.f = pygame.font.Font(None, 40)
+        self.text = 'NO'
+        self.t = self.f.render(self.text, True, 'white')
+        self.pos = self.t.get_rect(center=(self.width / 2 - self.width / 4.5 + self.width / 12,
+                                           self.height / 2 - self.height / 24 + self.height / 32))
+        screen.blit(self.t, self.pos)
+        self.f = pygame.font.Font(None, 40)
+        self.text = 'YES'
+        self.t = self.f.render(self.text, True, 'white')
+        self.pos = self.t.get_rect(center=(self.width / 2 + self.width / 18 + self.width / 12,
+                                           self.height / 2 - self.height / 24 + self.height / 32))
+        screen.blit(self.t, self.pos)
+
+    def authors(self):
+        # ссылка на авторов в конце
+        self.text = ['Authors:', 'https://github.com/timorez', 'https://github.com/evdakim1234']
+        self.y_text = self.height / 2 - self.height / 40
+        for i in self.text:
+            self.f = pygame.font.Font(None, 30)
+            self.t = self.f.render(i, True, 'green')
+            self.pos = self.t.get_rect(center=(self.width / 2, self.y_text))
+            screen.blit(self.t, self.pos)
+            self.y_text += self.height / 40
+        self.text = 'Thanks for playing!'
+        self.f = pygame.font.Font(None, 50)
+        self.t = self.f.render(self.text, True, 'white')
+        self.pos = self.t.get_rect(center=(self.width / 2, self.height / 1.5))
+        screen.blit(self.t, self.pos)
+
+
 settings = Settings(width, height, screen)
 settings.col_vo(col_vo_balls)
 settings.radius(radius)
@@ -366,6 +426,7 @@ settings.fullness_ball(fullness_ball)
 colors_sc_rgb = [(0, 0, 0), (255, 255, 255), (148, 0, 211), (190, 190, 190), (0, 121, 219),
                  (239, 48, 56), (253, 219, 109), (138, 255, 138)]
 
+exit_menu = Exit(width, height)
 records = Records()
 menu = Menu(1, 4)
 game = Game(color_ball, radius_ball, width_ball, fulness_ball, width, height, screen)
@@ -411,8 +472,17 @@ if __name__ == '__main__':
                         to_records = 1
                         to_intro = 0
                     elif menu.click([x_coord, y_coord]) == 4:
-                        running = False
-                        break
+                        to_menu = 0
+                        to_exit = 1
+                if 352 < y_coord < 400:
+                    if 284.4444 < x_coord < 455 and to_exit == 1:
+                        to_exit = 0
+                        to_menu = 1
+                        # обратно в главное меню
+                    if 568 < x_coord < 740:
+                        screen.fill(default_color_screen)
+                        f = 1
+                        to_exit = 0
                 if to_records == 1:
                     if 800 < x_coord < 950 and 690 < y_coord < 740:
                         to_records = 0
@@ -518,6 +588,7 @@ if __name__ == '__main__':
                 end_click = 0
                 col_vo = default_col_vo
                 time = 0
+                to_exit = 0
         if to_records == 1:
             records.render(screen)
         if to_settings == 1:
@@ -545,5 +616,12 @@ if __name__ == '__main__':
             settings.draw(color_screen, height / 20 * 9)
             screen.fill(default_color_screen, (width / 2, 0, width / 2, height / 2))
             settings.circle(radius, color_ball, fullness_ball)
+        if to_exit == 1:
+            exit_menu.click_exit()
+        if f == 1:
+            exit_menu.authors()
+            seconds = (pygame.time.get_ticks() - start) / 1000
+            if seconds > 5:
+                running = False
         pygame.display.flip()
         clock.tick(FPS)
