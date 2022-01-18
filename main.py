@@ -11,16 +11,18 @@ screen = pygame.display.set_mode(size)
 pygame.display.set_caption('ultra cs aim assister')
 sprite = pygame.sprite.Sprite()
 all_sprites = pygame.sprite.Group()
+col_vo_balls = 30
+radius = 35
+default_color_screen = 'black'
+color_screen = 'black'
+fullness_ball = 0
+color_ball = 'white'
 
 default_color_ball = pygame.color.Color('white')
 default_radius_ball = 35
 default_width_ball = 1
 default_fulness_ball = 0
-default_col_vo = 4
-default_color_screen = pygame.color.Color('black')
-color_screen = default_color_screen
-
-color_ball = default_color_ball
+default_col_vo = 30
 radius_ball = default_radius_ball
 width_ball = default_width_ball
 fulness_ball = default_fulness_ball
@@ -230,9 +232,144 @@ class Records:
         pygame.draw.rect(screen, 'white', (800, 690, 150, 50), 1)
 
 
+class Settings:
+    def __init__(self, width, height, screen):
+        self.width = width
+        self.height = height
+        self.screen = screen
+
+    def draw(self, text, y):
+        self.y = y
+        self.text = text
+        self.rect = pygame.Rect(self.width / 20, self.y, self.width / 10, self.height / 20)
+        self.rect_minus = pygame.Rect(1, self.y, self.width / 20, self.height / 20)
+        self.rect_plus = pygame.Rect(self.width / 20 + self.width / 10, self.y,
+                                     self.width / 20, self.height / 20)
+        self.f = pygame.font.Font(None, 40)
+        self.text_m = '--'
+        self.t = self.f.render(self.text_m, True, 'white')
+        self.pos = self.t.get_rect(center=(self.width / 40 + 1, self.y + self.height / 40))
+        pygame.draw.rect(self.screen, 'white', self.rect_minus, 1)
+        screen.blit(self.t, self.pos)
+        self.text_p = '+'
+        self.t = self.f.render(self.text_p, True, 'white')
+        self.pos = self.t.get_rect(center=(self.width / 20 + self.width / 10 + self.width / 40,
+                                           self.y + self.height / 40))
+        pygame.draw.rect(self.screen, 'white', self.rect_plus, 1)
+        screen.blit(self.t, self.pos)
+        self.text = str(self.text)
+        self.t = self.f.render(self.text, True, 'white')
+        self.pos = self.t.get_rect(center=(self.width / 20 + self.width / 20, self.y + self.height / 40))
+        pygame.draw.rect(self.screen, 'white', self.rect, 1)
+        screen.blit(self.t, self.pos)
+
+    def col_vo(self, col_vo_balls):
+        self.col_vo_balls = col_vo_balls
+        self.rect_minus_col_vo = pygame.Rect(1, self.height / 20, self.width / 20, self.height / 20)
+        self.rect_plus_col_vo = pygame.Rect(self.width / 20 + self.width / 10, self.height / 20,
+                                            self.width / 20, self.height / 20)
+        Settings.draw(self, self.col_vo_balls, self.height / 20)
+        self.text = 'targets'
+        self.t = self.f.render(self.text, True, 'white')
+        self.pos = self.t.get_rect(center=(self.width / 10 + self.width / 10 + self.width / 20,
+                                           self.height / 20 + self.height / 40))
+        screen.blit(self.t, self.pos)
+
+    def radius(self, rad):
+        self.rad = str(rad)
+        self.rect_minus_rad = pygame.Rect(1, self.height / 20 * 3, self.width / 20, self.height / 20)
+        self.rect_plus_rad = pygame.Rect(self.width / 20 + self.width / 10, self.height / 20 * 3,
+                                         self.width / 20, self.height / 20)
+        Settings.draw(self, self.rad, self.height / 20 * 3)
+        self.text = 'radius'
+        self.t = self.f.render(self.text, True, 'white')
+        self.pos = self.t.get_rect(center=(self.width / 10 + self.width / 10 + self.width / 20,
+                                           self.height / 20 * 3 + self.height / 40))
+        screen.blit(self.t, self.pos)
+
+    def fullness_ball(self, fullness_ball):
+        self.fullness_ball = fullness_ball
+        self.rect_minus_f_b = pygame.Rect(1, self.height / 20 * 5, self.width / 20, self.height / 20)
+        self.rect_plus_f_b = pygame.Rect(self.width / 20 + self.width / 10, self.height / 20 * 5,
+                                         self.width / 20, self.height / 20)
+        Settings.draw(self, self.fullness_ball, self.height / 20 * 5)
+        self.text = 'fullness of target'
+        self.t = self.f.render(self.text, True, 'white')
+        self.pos = self.t.get_rect(center=(self.width / 10 + self.width / 10 + self.width / 17 * 2,
+                                           self.height / 20 * 5 + self.height / 40))
+        screen.blit(self.t, self.pos)
+
+    def color(self, color_ball):
+        self.color_ball = str(color_ball)
+        self.rect_minus_color = pygame.Rect(1, self.height / 20 * 7, self.width / 20, self.height / 20)
+        self.rect_plus_color = pygame.Rect(self.width / 20 + self.width / 10, self.height / 20 * 7,
+                                           self.width / 20, self.height / 20)
+        self.text_colors = ['white', 'red', 'yellow', 'blue', 'green', 'orange', 'purple', 'pink', 'black', 'brown']
+        Settings.draw(self, self.color_ball, self.height / 20 * 7)
+        self.text = 'target color'
+        self.t = self.f.render(self.text, True, 'white')
+        self.pos = self.t.get_rect(center=(self.width / 10 + self.width / 10 + self.width / 25 * 2,
+                                           self.height / 20 * 7 + self.height / 40))
+        screen.blit(self.t, self.pos)
+
+    def color_sc(self, color_screen):
+        self.color_screen = str(color_screen)
+        self.rect_minus_color_sc = pygame.Rect(1, self.height / 20 * 9, self.width / 20, self.height / 20)
+        self.rect_plus_color_sc = pygame.Rect(self.width / 20 + self.width / 10, self.height / 20 * 9,
+                                              self.width / 20, self.height / 20)
+        Settings.draw(self, self.color_screen, self.height / 20 * 9)
+        self.text_colors_sc = ['black', 'white', 'purple', 'grey', 'blue', 'red', 'yellow', 'green']
+        self.text = 'screen color'
+        self.t = self.f.render(self.text, True, 'white')
+        self.pos = self.t.get_rect(center=(self.width / 10 + self.width / 10 + self.width / 22 * 2,
+                                           self.height / 20 * 9 + self.height / 40))
+        screen.blit(self.t, self.pos)
+        self.colors_sc_rgb = [(0, 0, 0), (255, 255, 255), (148, 0, 211), (190, 190, 190), (0, 121, 219),
+                              (239, 48, 56), (253, 219, 109), (138, 255, 138)]
+
+    def warning(self):
+        self.text = "Warning! Don't use the same colors!"
+        self.t = self.f.render(self.text, True, 'white')
+        self.pos = self.t.get_rect(center=(self.width / 10 + self.width / 14 * 2, self.height / 1.5))
+        screen.blit(self.t, self.pos)
+
+    def circle(self, radius, color, fulness_ball):
+        self.fulness_ball = fulness_ball
+        self.radius = radius
+        self.color = color
+        if self.fulness_ball == 0:
+            self.fulness_ball = 1
+        else:
+            self.fulness_ball = 0
+        pygame.draw.circle(screen, self.color, (width / 2 + width / 4, height / 4), self.radius, self.fulness_ball)
+
+    def authors(self):
+        self.text = ['Authors:', 'https://github.com/timorez', 'github.com/evdakim1234']
+        self.y_text = self.height / 1.2
+        for i in self.text:
+            self.f = pygame.font.Font(None, 30)
+            self.t = self.f.render(i, True, 'green')
+            self.pos = self.t.get_rect(center=(self.width / 5, self.y_text))
+            screen.blit(self.t, self.pos)
+            self.y_text += self.height / 40
+
+
+settings = Settings(width, height, screen)
+settings.col_vo(col_vo_balls)
+settings.radius(radius)
+settings.color(color_ball)
+settings.color_sc(color_screen)
+settings.warning()
+settings.authors()
+settings.circle(radius, color_ball, fullness_ball)
+settings.fullness_ball(fullness_ball)
+colors_sc_rgb = [(0, 0, 0), (255, 255, 255), (148, 0, 211), (190, 190, 190), (0, 121, 219),
+                 (239, 48, 56), (253, 219, 109), (138, 255, 138)]
+
 records = Records()
 menu = Menu(1, 4)
 game = Game(color_ball, radius_ball, width_ball, fulness_ball, width, height, screen)
+
 Border(5, 5, width - 5, 5)
 Border(5, height - 5, width - 5, height - 5)
 Border(5, 5, 5, height - 5)
@@ -251,7 +388,7 @@ if __name__ == '__main__':
                 sqx = (x_coord - (width / 2)) ** 2
                 sqy = (y_coord - (height / 2)) ** 2
                 if (x_coord - game.coord_x) ** 2 + (
-                        y_coord - game.coord_y) ** 2 < default_radius_ball ** 2:
+                        y_coord - game.coord_y) ** 2 < game.radius_ball ** 2:
                     clicked = 1
                 if width - width / 5 <= x_coord <= (width - width / 5) + (width / 5) \
                         and height - height / 10 <= y_coord <= (height - height / 10) + (height / 10) and col_vo == 0:
@@ -280,7 +417,57 @@ if __name__ == '__main__':
                     if 800 < x_coord < 950 and 690 < y_coord < 740:
                         to_records = 0
                         to_menu = 1
-        screen.fill((0, 0, 0))
+                if to_settings:
+                    if 100 < x_coord < 250 and 690 < y_coord < 940:
+                        to_settings = 0
+                        to_menu = 1
+                    if settings.rect_plus_col_vo.collidepoint(pygame.mouse.get_pos()):
+                        if col_vo_balls < 200:
+                            col_vo_balls += 5
+                            col_vo += 5
+                    if settings.rect_minus_col_vo.collidepoint(pygame.mouse.get_pos()):
+                        if col_vo_balls > 5:
+                            col_vo_balls -= 5
+                            col_vo -= 5
+                    if settings.rect_plus_rad.collidepoint(pygame.mouse.get_pos()):
+                        if radius < 75:
+                            radius += 5
+                            game.radius_ball += 5
+                    if settings.rect_minus_rad.collidepoint(pygame.mouse.get_pos()):
+                        if radius > 5:
+                            radius -= 5
+                            game.radius_ball -= 5
+                    if settings.rect_minus_f_b.collidepoint(pygame.mouse.get_pos()):
+                        if fullness_ball > 0:
+                            fullness_ball -= 1
+                            game.width_ball += 1
+                    if settings.rect_plus_f_b.collidepoint(pygame.mouse.get_pos()):
+                        if fullness_ball < 1:
+                            fullness_ball += 1
+                            game.width_ball -= 1
+                    if settings.rect_minus_color.collidepoint(pygame.mouse.get_pos()):
+                        color_ball = settings.text_colors[settings.text_colors.index(color_ball) - 1]
+                        game.color_ball = color_ball
+                    if settings.rect_plus_color.collidepoint(pygame.mouse.get_pos()):
+                        if settings.text_colors.index(color_ball) < 9:
+                            color_ball = settings.text_colors[settings.text_colors.index(color_ball) + 1]
+                            game.color_ball = color_ball
+                        else:
+                            color_ball = 'white'
+                            game.color_ball = color_ball
+                    if settings.rect_minus_color_sc.collidepoint(pygame.mouse.get_pos()):
+                        default_color_screen = settings.colors_sc_rgb[settings.text_colors_sc.index(color_screen)]
+                        color_screen = settings.text_colors_sc[settings.text_colors_sc.index(color_screen) - 1]
+                    if settings.rect_plus_color_sc.collidepoint(pygame.mouse.get_pos()):
+                        if settings.text_colors_sc.index(color_screen) < 7:
+                            color_screen = settings.text_colors_sc[
+                                settings.text_colors_sc.index(color_screen) + 1]
+                            default_color_screen = settings.colors_sc_rgb[settings.text_colors_sc.index(color_screen)]
+                        else:
+                            color_screen = 'black'
+                            default_color_screen = 'black'
+
+        screen.fill(default_color_screen)
         if begin == 1:
             pygame.draw.circle(screen, 'white', (width / 2, height / 2), height / 10, 1)
             text = 'Start'
@@ -333,5 +520,19 @@ if __name__ == '__main__':
                 time = 0
         if to_records == 1:
             records.render(screen)
+        if to_settings == 1:
+            f = pygame.font.Font(None, 40)
+            button_text = f.render('go to menu', True, 'white')
+            screen.blit(button_text, (100, 700))
+            pygame.draw.rect(screen, 'white', (100, 690, 150, 50), 1)
+            settings.authors()
+            screen.fill(default_color_screen, (width / 20, height / 20, width / 10, height / 20))
+            settings.draw(col_vo_balls, height / 20)
+            settings.draw(radius, height / 20 * 3)
+            settings.draw(fullness_ball, height / 20 * 5)
+            settings.draw(color_ball, height / 20 * 7)
+            settings.draw(color_screen, height / 20 * 9)
+            screen.fill(default_color_screen, (width / 2, 0, width / 2, height / 2))
+            settings.circle(radius, color_ball, fullness_ball)
         pygame.display.flip()
         clock.tick(FPS)
