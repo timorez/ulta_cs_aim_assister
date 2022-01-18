@@ -3,7 +3,6 @@ import random
 import math
 import sqlite3
 
-
 con = sqlite3.connect('records.sqlite')
 cur = con.cursor()
 pygame.init()
@@ -254,7 +253,7 @@ if __name__ == '__main__':
                 if (x_coord - game.coord_x) ** 2 + (
                         y_coord - game.coord_y) ** 2 < default_radius_ball ** 2:
                     clicked = 1
-                if width - width / 5 <= x_coord <= (width - width / 5) + (width / 5)\
+                if width - width / 5 <= x_coord <= (width - width / 5) + (width / 5) \
                         and height - height / 10 <= y_coord <= (height - height / 10) + (height / 10) and col_vo == 0:
                     end_click = 1
                 if math.sqrt(sqx + sqy) < height / 10 and begin == 1:
@@ -314,7 +313,7 @@ if __name__ == '__main__':
             if end_click == 1:
                 prev_rec = list(cur.execute("""SELECT * FROM records"""))
                 for rec in prev_rec:
-                    if rec[1] < time / default_col_vo:
+                    if rec[1] > time / default_col_vo or rec[1] == 0:
                         cur.execute("""UPDATE records
                                        SET (time, targets_per_second) = (?, ?)
                                        WHERE id = ?""",
