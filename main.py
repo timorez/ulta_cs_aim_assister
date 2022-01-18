@@ -320,13 +320,13 @@ class Settings:
         self.rect_plus_color_sc = pygame.Rect(self.width / 20 + self.width / 10, self.height / 20 * 9,
                                               self.width / 20, self.height / 20)
         Settings.draw(self, self.color_screen, self.height / 20 * 9)
-        self.text_colors_sc = ['black', 'white', 'purple', 'grey', 'blue', 'red', 'yellow', 'green']
+        self.text_colors_sc = ['black', 'purple', 'grey', 'blue', 'red', 'yellow', 'green']
         self.text = 'screen color'
         self.t = self.f.render(self.text, True, 'white')
         self.pos = self.t.get_rect(center=(self.width / 10 + self.width / 10 + self.width / 22 * 2,
                                            self.height / 20 * 9 + self.height / 40))
         screen.blit(self.t, self.pos)
-        self.colors_sc_rgb = [(0, 0, 0), (255, 255, 255), (148, 0, 211), (190, 190, 190), (0, 121, 219),
+        self.colors_sc_rgb = [(0, 0, 0), (148, 0, 211), (190, 190, 190), (0, 121, 219),
                               (239, 48, 56), (253, 219, 109), (138, 255, 138)]
 
     def warning(self):
@@ -363,10 +363,6 @@ class Exit:
         self.rect_dont_exit = pygame.Rect(self.width / 2 - self.width / 4.5, self.height / 2 - self.height / 24,
                                            self.width / 6, self.height / 16)
         self.rect_exit = pygame.Rect(self.width / 2 + self.width / 18, self.height / 2 - self.height / 24,
-                                     self.width / 6, self.height / 16)
-        print(self.width / 2 - self.width / 4.5, self.height / 2 - self.height / 24,
-                                           self.width / 6, self.height / 16)
-        print(self.width / 2 + self.width / 18, self.height / 2 - self.height / 24,
                                      self.width / 6, self.height / 16)
 
     def click_exit(self):
@@ -526,10 +522,10 @@ if __name__ == '__main__':
                             color_ball = 'white'
                             game.color_ball = color_ball
                     if settings.rect_minus_color_sc.collidepoint(pygame.mouse.get_pos()):
-                        default_color_screen = settings.colors_sc_rgb[settings.text_colors_sc.index(color_screen)]
                         color_screen = settings.text_colors_sc[settings.text_colors_sc.index(color_screen) - 1]
+                        default_color_screen = settings.colors_sc_rgb[settings.text_colors_sc.index(color_screen)]
                     if settings.rect_plus_color_sc.collidepoint(pygame.mouse.get_pos()):
-                        if settings.text_colors_sc.index(color_screen) < 7:
+                        if settings.text_colors_sc.index(color_screen) < 6:
                             color_screen = settings.text_colors_sc[
                                 settings.text_colors_sc.index(color_screen) + 1]
                             default_color_screen = settings.colors_sc_rgb[settings.text_colors_sc.index(color_screen)]
