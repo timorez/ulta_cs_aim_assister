@@ -2,7 +2,9 @@ import pygame
 import random
 import math
 
+# создаем окно для работы
 pygame.init()
+# значения которые будут стоять по умолчанию
 default_color_ball = pygame.color.Color('white')
 default_radius_ball = 35
 default_width_ball = 1
@@ -13,6 +15,7 @@ default_color_screen = pygame.color.Color('black')
 size = width, height = 1000, 500
 screen = pygame.display.set_mode(size)
 
+# класс основного игрового процесса
 class Game():
 
     def __init__(self, color_ball, radius_ball, width_ball, fulness_ball, width, height, screen):
@@ -73,6 +76,7 @@ class Game():
         screen.blit(self.text, self.pos)
 
 
+# значения которые будут передаваться из настроек
 color_ball = default_color_ball
 radius_ball = default_radius_ball
 width_ball = default_width_ball
@@ -89,6 +93,7 @@ FPS = 60
 v = 1
 time = 0
 clock = pygame.time.Clock()
+# основной игровой цикл
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -102,10 +107,12 @@ while running:
             sqx = (x_coord_mouse - (x_coord)) ** 2
             sqy = (y_coord_mouse - (y_coord)) ** 2
             if math.sqrt(sqx + sqy) < radius_ball:
+                # начало игры
                 zapusk = 1
                 nachalo = 1
     if col_vo > 0:
         if nachalo == 1:
+            # старт таймера
             time += v / 60
         if zapusk == 1:
             screen.fill(color_screen)
@@ -114,6 +121,7 @@ while running:
             col_vo -= 1
             zapusk = 0
     if col_vo <= 0:
+        # конец игры
         screen.fill(color_screen)
         game.end(time)
     clock.tick(FPS)
