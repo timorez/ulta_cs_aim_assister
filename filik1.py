@@ -1,6 +1,7 @@
 import pygame
 
 
+# создание окна для работы
 pygame.init()
 size = width, height = 1024, 768
 screen = pygame.display.set_mode(size)
@@ -10,6 +11,8 @@ default_color_screen = 'black'
 color_screen = 'black'
 fullness_ball = 0
 color_ball = 'white'
+
+# класс настроек
 class Settings:
     def __init__(self, width, height, screen):
         self.width = width
@@ -18,6 +21,7 @@ class Settings:
 
 
     def draw(self, text, y):
+        # функция отрисовки кнопок плюс и минус
         self.y = y
         self.text = text
         self.rect = pygame.Rect(self.width / 20, self.y, self.width / 10, self.height / 20)
@@ -44,6 +48,7 @@ class Settings:
 
 
     def col_vo(self, col_vo_balls):
+        # функция определяющая количество целей
         self.col_vo_balls = col_vo_balls
         self.rect_minus_col_vo = pygame.Rect(1, self.height / 20, self.width / 20, self.height / 20)
         self.rect_plus_col_vo = pygame.Rect(self.width / 20 + self.width / 10, self.height / 20,
@@ -57,6 +62,7 @@ class Settings:
 
 
     def radius(self, rad):
+        # функция, определяющая радиус цели
         self.rad = str(rad)
         self.rect_minus_rad = pygame.Rect(1, self.height / 20 * 3, self.width / 20, self.height / 20)
         self.rect_plus_rad = pygame.Rect(self.width / 20 + self.width / 10, self.height / 20 * 3,
@@ -70,6 +76,7 @@ class Settings:
 
 
     def fullness_ball(self, fullness_ball):
+        # функция, определяющая будет ли залита цель
         self.fullness_ball = fullness_ball
         self.rect_minus_f_b = pygame.Rect(1, self.height / 20 * 5, self.width / 20, self.height / 20)
         self.rect_plus_f_b = pygame.Rect(self.width / 20 + self.width / 10, self.height / 20 * 5,
@@ -83,6 +90,7 @@ class Settings:
 
 
     def color(self, color_ball):
+        # функция, определяющая цвет цели
         self.color_ball = str(color_ball)
         self.rect_minus_color = pygame.Rect(1, self.height / 20 * 7, self.width / 20, self.height / 20)
         self.rect_plus_color = pygame.Rect(self.width / 20 + self.width / 10, self.height / 20 * 7,
@@ -97,6 +105,7 @@ class Settings:
 
 
     def color_sc(self, color_screen):
+        # функция, определяющая цвет экрана во время игрового процесса
         self.color_screen = str(color_screen)
         self.rect_minus_color_sc = pygame.Rect(1, self.height / 20 * 9, self.width / 20, self.height / 20)
         self.rect_plus_color_sc = pygame.Rect(self.width / 20 + self.width / 10, self.height / 20 * 9,
@@ -113,6 +122,7 @@ class Settings:
 
 
     def warning(self):
+        # предупреждение об одинаковых цветах
         self.text = "Warning! Don't use the same colors!"
         self.t = self.f.render(self.text, True, 'white')
         self.pos = self.t.get_rect(center=(self.width / 10 + self.width / 14 * 2, self.height / 1.5))
@@ -120,6 +130,7 @@ class Settings:
 
 
     def circle(self, radius, color, fulness_ball):
+        # функция, отрисовки меняющегося круга в зависимости от значений в настройках
         self.fulness_ball = fulness_ball
         self.radius = radius
         self.color = color
@@ -131,6 +142,7 @@ class Settings:
         
         
     def authors(self):
+        # ссылка на авторов
         self.text = ['Authors:', 'https://github.com/timorez', 'github.com/evdakim1234']
         self.y_text = self.height / 1.2
         for i in self.text:
@@ -153,11 +165,13 @@ set.authors()
 set.circle(radius, color_ball, fullness_ball)
 running = True
 set.fullness_ball(fullness_ball)
+# основной игровой цикл
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            # изменение настроек в зависимости от нажатий на кнопки
             if set.rect_plus_col_vo.collidepoint(pygame.mouse.get_pos()):
                 if col_vo_balls < 200:
                     col_vo_balls += 5
