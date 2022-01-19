@@ -459,6 +459,7 @@ if __name__ == '__main__':
                         to_gameplay = 1
                         to_menu = 0
                         to_intro = 0
+                        col_vo = default_col_vo
                     elif menu.click([x_coord, y_coord]) == 2:
                         to_menu = 0
                         to_settings = 1
@@ -490,11 +491,11 @@ if __name__ == '__main__':
                     if settings.rect_plus_col_vo.collidepoint(pygame.mouse.get_pos()):
                         if col_vo_balls < 200:
                             col_vo_balls += 5
-                            col_vo += 5
+                            default_col_vo += 5
                     if settings.rect_minus_col_vo.collidepoint(pygame.mouse.get_pos()):
                         if col_vo_balls > 5:
                             col_vo_balls -= 5
-                            col_vo -= 5
+                            default_col_vo -= 5
                     if settings.rect_plus_rad.collidepoint(pygame.mouse.get_pos()):
                         if radius < 75:
                             radius += 5
