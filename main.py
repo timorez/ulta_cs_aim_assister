@@ -471,7 +471,7 @@ if __name__ == '__main__':
                     elif menu.click([x_coord, y_coord]) == 4:
                         to_menu = 0
                         to_exit = 1
-                if 352 < y_coord < 400:
+                if 352 < y_coord < 400 and to_exit == 1:
                     if 284.4444 < x_coord < 455 and to_exit == 1:
                         to_exit = 0
                         to_menu = 1
@@ -618,7 +618,7 @@ if __name__ == '__main__':
         if f == 1:
             exit_menu.authors()
             seconds = (pygame.time.get_ticks() - start) / 1000
-            if seconds > 5:
+            if seconds > 17:
                 running = False
         pygame.display.flip()
         clock.tick(FPS)
