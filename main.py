@@ -27,15 +27,12 @@ radius_ball = default_radius_ball
 width_ball = default_width_ball
 fulness_ball = default_fulness_ball
 
-click = 0
-start_timer = None
 rectangle_menu = pygame.Rect(width - width / 5, height - height / 10,
                              width / 5, height / 10)
 v = 1
 time = 0
 start = pygame.time.get_ticks()
 
-zapusk = None
 pygame.draw.circle(screen, 'white', (width / 2, height / 2), height / 10, 1)
 text = 'Start'
 f = pygame.font.Font(None, 40)
